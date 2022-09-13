@@ -1,3 +1,4 @@
+import logging
 import socket, threading, os
 import struct
 from exercicio2_status import *
@@ -31,7 +32,7 @@ class Client:
                         f.write(bytes(fileData))          
                 else:
                     self.requestedFile = None
-                    print('Erro ao receber arquivo')
+                    logging.error("Erro ao receber o arquivo")
 
             if command == COMMAND_GETFILESLIST:
                 if status == STATUS_SUCCESS:
@@ -45,8 +46,19 @@ class Client:
                         filename = filename[:filenameSize]
                         print(filename)
                 else:
-                    print('Erro ao receber lista de arquivos')
-            print(status)
+                    logging.error('Erro ao receber lista de arquivos')
+            
+            if command == COMMAND_ADDFILE:
+                if status == STATUS_SUCCESS:
+                    logging.info("Arquivo enviado com sucesso")
+                else:
+                    logging.error("Erro ao enviar arquivo")
+            
+            if command == COMMAND_DELETE:
+                if status == STATUS_SUCCESS:
+                    logging.info("Arquivo deletado com sucesso")
+                else:
+                    logging.error("Erro ao deletar arquivo")
             
 
     def sendThread(self):
@@ -74,7 +86,7 @@ class Client:
                         self.con.send(struct.pack("B", data[byteIndex]))
                     file.close()
                 except Exception as e:
-                    print('Excecao adicionar arquivo:', e)
+                    logging.error("Erro ao adicionar arquivo", e)
             
             if msg[0] == 'GETFILESLIST':
                 packedRequest = struct.pack(

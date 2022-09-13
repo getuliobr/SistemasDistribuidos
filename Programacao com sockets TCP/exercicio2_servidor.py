@@ -1,6 +1,10 @@
-import socket, threading, hashlib, struct, os
+import socket, threading, hashlib, struct, os, logging
 from tkinter import EXCEPTION
 from exercicio2_status import *
+
+
+log = logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+
 
 def handleClient(con):
     Client(con)
@@ -12,7 +16,7 @@ class Client:
         self.send = threading.Thread(target=self.sendThread)
         self.send.start()
         self.receiveThread()
-        print('Cliente desconectou')
+        logging.info("Cliente desconectou")
         self.con.close()
         
     def response(self, command, status):
@@ -30,6 +34,7 @@ class Client:
             type, command, filenameSize = struct.unpack('BBB', msg[:3])
             if type != MESSAGE_TYPE_REQUEST:
                 continue
+
             try:
                 if command == COMMAND_ADDFILE:
                     filename, fileSize = struct.unpack(f'!{filenameSize}sI', msg[3:])
@@ -40,11 +45,13 @@ class Client:
                     with open('./ex2_servidor_recebidos/' + filename.decode('ascii'), 'wb+') as f:
                         f.write(bytes(fileData))
                     self.response(command, STATUS_SUCCESS)
+                    logging.info(f"Success on ADDFILE {filename.decode('ascii')}")
                 
                 if command == COMMAND_DELETE:
                     filename, = struct.unpack(f'!{filenameSize}s', msg[3:])
                     os.remove('./ex2_servidor_recebidos/' + filename.decode('ascii'))
                     self.response(command, STATUS_SUCCESS)
+                    logging.info(f"Success on DELETE {filename.decode('ascii')}")
                 
                 if command == COMMAND_GETFILESLIST:
                     files = os.listdir('./ex2_servidor_recebidos')
@@ -63,6 +70,7 @@ class Client:
                             bytes(file, 'ascii')
                         )
                         self.con.send(packedResponse)
+                    logging.info(f'Success on GETFILESLIST')
 
                 if command == COMMAND_GETFILE:
                     filename, = struct.unpack(f'!{filenameSize}s', msg[3:])
@@ -80,9 +88,10 @@ class Client:
                     for byteIndex in range(fileSize):
                         self.con.send(struct.pack("B", data[byteIndex]))
                     f.close()
+                    logging.info(f"Success on GETFILE {filename.decode('ascii')}")
                 
             except Exception as e:
-                print(e)
+                logging.error(e)
                 self.response(command, STATUS_ERROR)
 
     def sendThread(self):
@@ -102,8 +111,8 @@ orig = (HOST, PORT)
 tcp.bind(orig)
 tcp.listen(1)
 while True:
-    print("Servidor aguardando conexao ...")
+    logging.info("Servidor aguardando conexão ...")
     con, cliente = tcp.accept()
-    print("Cliente conectado ... Criando thread ...");
+    logging.info("Cliente conectado --- Criando thread")
     client = threading.Thread(target=handleClient, args=(con,))
     client.start()
