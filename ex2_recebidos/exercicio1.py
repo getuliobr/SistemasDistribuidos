@@ -1,8 +1,8 @@
 import socket, threading, hashlib, os
 
-
 users = {
     'getulio': '12345678',
+    'igor': 'igor'
     'admin': 'admin'
 }
 
