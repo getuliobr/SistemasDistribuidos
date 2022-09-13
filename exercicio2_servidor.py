@@ -1,4 +1,5 @@
 import socket, threading, hashlib, struct, os
+from tkinter import EXCEPTION
 from exercicio2_status import *
 
 def handleClient(con):
@@ -36,17 +37,17 @@ class Client:
                     fileData = bytes()
                     for i in range(fileSize):
                         fileData += (self.con.recv(1))
-                    with open('./ex2_recebidos/' + filename.decode('ascii'), 'wb+') as f:
+                    with open('./ex2_servidor_recebidos/' + filename.decode('ascii'), 'wb+') as f:
                         f.write(bytes(fileData))
                     self.response(command, STATUS_SUCCESS)
                 
                 if command == COMMAND_DELETE:
                     filename, = struct.unpack(f'!{filenameSize}s', msg[3:])
-                    os.remove('./ex2_recebidos/' + filename.decode('ascii'))
+                    os.remove('./ex2_servidor_recebidos/' + filename.decode('ascii'))
                     self.response(command, STATUS_SUCCESS)
                 
                 if command == COMMAND_GETFILESLIST:
-                    files = os.listdir('./ex2_recebidos')
+                    files = os.listdir('./ex2_servidor_recebidos')
                     packedResponse = struct.pack(
                         f'!BBBH',
                         MESSAGE_TYPE_RESPONSE,
@@ -65,7 +66,7 @@ class Client:
 
                 if command == COMMAND_GETFILE:
                     filename, = struct.unpack(f'!{filenameSize}s', msg[3:])
-                    with open('./ex2_recebidos/' + filename.decode('ascii'), 'rb') as f:
+                    with open('./ex2_servidor_recebidos/' + filename.decode('ascii'), 'rb') as f:
                         data = f.read()
                     fileSize = len(data)
                     packedResponse = struct.pack(
@@ -80,7 +81,8 @@ class Client:
                         self.con.send(struct.pack("B", data[byteIndex]))
                     f.close()
                 
-            except:
+            except Exception as e:
+                print(e)
                 self.response(command, STATUS_ERROR)
 
     def sendThread(self):

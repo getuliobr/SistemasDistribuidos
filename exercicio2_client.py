@@ -30,6 +30,7 @@ class Client:
                     with open('./ex2_cliente_recebidos/' + self.requestedFile, 'wb+') as f:
                         f.write(bytes(fileData))          
                 else:
+                    self.requestedFile = None
                     print('Erro ao receber arquivo')
 
             if command == COMMAND_GETFILESLIST:
@@ -86,6 +87,7 @@ class Client:
                 self.con.send(packedRequest)
             
             if msg[0] == 'GETFILE':
+                self.requestedFile = msg[1]
                 filename = bytes(msg[1], 'ascii')
                 filenameSize = len(msg[1])
                 packedRequest = struct.pack(
