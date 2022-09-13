@@ -1,14 +1,11 @@
 from http import client
-import socket, threading, hashlib
+import socket, threading, hashlib, os
 
 
 users = {
     'getulio': '12345678',
     'admin': 'admin'
 }
-
-def handleClient(con):
-    Client(con)
 
 class Client:
     def __init__(self, con):
@@ -22,7 +19,7 @@ class Client:
         
     def receive(self):
         while self.alive:
-            msg = (self.con.recv(1024)).decode()
+            msg = (self.con.recv(1024)).decode("utf-8")
             if msg == 'EXIT' or not msg:
                 self.alive = False
                 break
@@ -37,9 +34,35 @@ class Client:
                 user, password = msg[1].split(',')
                 
                 if(hashlib.sha512(users[user].encode("utf-8")).hexdigest() != password):
+                    self.con.send(('ERROR').encode("utf-8"))
                     continue
                 self.loggedin = True
+                self.con.send(('SUCCESS').encode("utf-8"))
+
             
+            if command == 'PWD' and self.loggedin:
+                self.con.send(os.getcwd().encode("utf-8"))
+            
+            if command == 'CHDIR' and self.loggedin:
+                try:
+                    os.chdir(msg[1])
+                    self.con.send(('SUCCESS').encode("utf-8"))
+                except:
+                    self.con.send(('ERROR').encode("utf-8"))
+
+            if command == 'GETFILES' and self.loggedin:
+                files = [f for f in os.listdir('.') if os.path.isfile(f)]
+                self.con.send(str(len(files)).encode("utf-8"))
+                for file in files:
+                    self.con.send(str(file + '\n').encode("utf-8"))
+            
+            if command == 'GETDIRS' and self.loggedin:
+                files = [f for f in os.listdir('.') if not os.path.isfile(f)]
+                self.con.send(str(len(files)).encode("utf-8"))
+                for file in files:
+                    self.con.send(str(file + '\n').encode("utf-8"))
+            
+
             if not self.loggedin:
                 continue
 
@@ -52,11 +75,8 @@ orig = (HOST, PORT)
 tcp.bind(orig)
 tcp.listen(1)
 while True:
-    print("Servidor aguardando conexao ...");
-
+    print("Servidor aguardando conexao ...")
     con, cliente = tcp.accept()
-    print("Cliente conectado ... Criando thread ...");
-    client = threading.Thread(target=handleClient, args=(con,))
-    client.start()
-    
-    
+    pid = os.fork()
+    if pid == 0:
+        Client(con)
