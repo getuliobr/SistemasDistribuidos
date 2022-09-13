@@ -9,6 +9,7 @@ class Client:
     def __init__(self, con):
         self.con = con
         self.alive = True
+        self.requestedFile = None
         self.send = threading.Thread(target=self.sendThread)
         self.send.start()
         self.receiveThread()
@@ -21,7 +22,15 @@ class Client:
 
             message_type, command, status = struct.unpack('BBB', msg[:3])
             if command == COMMAND_GETFILE:
-                pass
+                if status == STATUS_SUCCESS:
+                    fileSize, = struct.unpack(f'!I', msg[3:])
+                    fileData = bytes()
+                    for i in range(fileSize):
+                        fileData += (self.con.recv(1))
+                    with open('./ex2_cliente_recebidos/' + self.requestedFile, 'wb+') as f:
+                        f.write(bytes(fileData))          
+                else:
+                    print('Erro ao receber arquivo')
 
             if command == COMMAND_GETFILESLIST:
                 if status == STATUS_SUCCESS:
