@@ -1,8 +1,15 @@
+"""
+    Descrição: Servidor para listagem de arquivos e pastas com autenticação
+    Autores: Getulio Coimbra Regis e Igor Lara de Oliveira
+    Creation Date: 12 / 09 / 2022
+"""
+
 import socket, threading, hashlib, os
 
 
 users = {
     'getulio': '12345678',
+    'igor': '12345678',
     'admin': 'admin'
 }
 

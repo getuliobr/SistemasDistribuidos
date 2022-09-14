@@ -1,4 +1,10 @@
-import socket, threading, hashlib, struct, os, logging
+"""
+    Descrição: Servidor para listagem e transferência de arquivos com protocolo em binário
+    Autores: Getulio Coimbra Regis e Igor Lara de Oliveira
+    Creation Date: 12 / 09 / 2022
+"""
+
+import socket, threading, struct, os, logging
 from exercicio2_utils import convertBytesNumber
 from exercicio2_utils import *
 

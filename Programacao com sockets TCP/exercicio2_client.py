@@ -1,3 +1,9 @@
+"""
+    Descrição: Cliente para listagem e transferência de arquivos com protocolo em binário
+    Autores: Getulio Coimbra Regis e Igor Lara de Oliveira
+    Creation Date: 12 / 09 / 2022
+"""
+
 import logging
 import socket, threading, os
 import struct
