@@ -1,7 +1,8 @@
 import logging
 import socket, threading, os
 import struct
-from exercicio2_status import *
+from exercicio2_utils import convertBytesNumber
+from exercicio2_utils import *
 
 # Método que cria um cliente
 def handleClient(con):
@@ -36,7 +37,7 @@ class Client:
                     # Desempacota tamanho do arquivo (2 bytes)
                     fileSize, = struct.unpack(f'!I', self.con.recv(4))
                     fileData = bytes()
-                    logging.info(f"Fazendo download arquivo de {fileSize} bytes")
+                    logging.info(f"Fazendo download arquivo de {convertBytesNumber(fileSize)}")
 
                     # Abre o arquivo na pasta de recebimento do cliente e escreve os bytes recebidos 1 por 1
                     with open('./ex2_cliente_recebidos/' + self.requestedFile, 'wb') as file:
@@ -100,7 +101,7 @@ class Client:
                     file = open(msg[1], 'rb')
                     data = file.read()
                     filesize = len(data)
-                    logging.info(f"Bytes a serem enviados: {filesize}")
+                    logging.info(f"Bytes a serem enviados: {convertBytesNumber(filesize)}")
                     filename = bytes(msg[1], 'ascii')
                     filenameSize = len(msg[1])
 

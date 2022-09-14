@@ -1,5 +1,6 @@
 import socket, threading, hashlib, struct, os, logging
-from exercicio2_status import *
+from exercicio2_utils import convertBytesNumber
+from exercicio2_utils import *
 
 
 # Define o formato de log
@@ -51,7 +52,7 @@ class Client:
                     msg = self.con.recv(4) # Recebe os atributos do arquivo
                     fileSize, = struct.unpack('!I', msg)
                     fileData = bytes()
-                    logging.info(f'Arquivo {filename} de tamanho {fileSize} sendo recebido do cliente ({self.client})')
+                    logging.info(f'Arquivo {filename} de tamanho {convertBytesNumber(fileSize)} sendo recebido do cliente ({self.client})')
 
                     # Cria o arquivo e recebe os bytes do cliente
                     with open(f'./ex2_servidor_recebidos/{filename}', 'wb') as file:
@@ -99,7 +100,7 @@ class Client:
                     with open(f'./ex2_servidor_recebidos/{filename}', 'rb') as f:
                         data = f.read()
                     fileSize = len(data)
-
+                    logging.info(f'Arquivo {filename} de tamanho {convertBytesNumber(fileSize)} sendo enviado para o cliente ({self.client})')
                     # Empacota response com cabeçalho comum e tamanho do arquivo, e envia
                     packedResponse = struct.pack(
                         f'!BBBI',
