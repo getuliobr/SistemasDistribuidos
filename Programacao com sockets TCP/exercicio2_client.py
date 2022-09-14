@@ -6,6 +6,7 @@ from exercicio2_status import *
 def handleClient(con):
     Client(con)
 
+log = logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 class Client:
     def __init__(self, con):
         self.con = con
@@ -19,12 +20,11 @@ class Client:
         
     def receiveThread(self):
         while self.alive:
-            msg = (self.con.recv(1024))
-
-            message_type, command, status = struct.unpack('BBB', msg[:3])
+            msg = self.con.recv(3)
+            message_type, command, status = struct.unpack('BBB', msg)
             if command == COMMAND_GETFILE:
                 if status == STATUS_SUCCESS:
-                    fileSize, = struct.unpack(f'!I', msg[3:])
+                    fileSize, = struct.unpack(f'!I', self.con.recv(4))
                     fileData = bytes()
                     for i in range(fileSize):
                         fileData += (self.con.recv(1))
@@ -36,15 +36,16 @@ class Client:
 
             if command == COMMAND_GETFILESLIST:
                 if status == STATUS_SUCCESS:
-                    print('Arquivos no servidor:')
-                    files, = struct.unpack('!H', msg[3:])
-                    for file in range(files):
-                        fileReceived = self.con.recv(256)
-                        filenameSize, = struct.unpack('B', fileReceived[:1])
-                        filename = struct.unpack(f'255s', fileReceived[1:])
-                        filename = filename[0].decode('ascii')
-                        filename = filename[:filenameSize]
-                        print(filename)
+                    filesAmount, = struct.unpack('!H', self.con.recv(2))
+                    if(filesAmount == 0):
+                        logging.info("Nenhum arquivo no servidor")
+                        continue
+
+                    logging.info(f'{filesAmount} arquivos no servidor:')
+                    for i in range(filesAmount):
+                        filenameSize, = struct.unpack('B', self.con.recv(1))
+                        filename = self.con.recv(filenameSize).decode('ascii')
+                        logging.info(filename)
                 else:
                     logging.error('Erro ao receber lista de arquivos')
             
@@ -70,6 +71,7 @@ class Client:
                     file = open(msg[1], 'rb')
                     data = file.read()
                     filesize = len(data)
+                    print(filesize)
                     filename = bytes(msg[1], 'ascii')
                     filenameSize = len(msg[1])
                     packedRequest = struct.pack(
@@ -93,8 +95,8 @@ class Client:
                                     'BBBB', 
                                     MESSAGE_TYPE_REQUEST,
                                     COMMAND_GETFILESLIST,
-                                    0x00,
-                                    0x00
+                                    0x01,
+                                    0x01
                                 )
                 self.con.send(packedRequest)
             
