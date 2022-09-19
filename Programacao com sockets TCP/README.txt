@@ -17,5 +17,5 @@ Bibliotecas usadas:
 Exemplo de uso:
     python3 exercicio1.py <- Iniciar o servidor e com um cliente textual conectar no servidor os comandos são exatamente iguais o do pdf para autenticar é usado CONNECT usuario,senhaemmd5
 
-    python3 exercicio2_servidor.py <- Inicia o servidor
-    python3 exercicio2_client.py <- Comandos tem o mesmo nome do pdf os arquivos para serem transferidos devem estar na mesma pasta do cliente para ele conseguir abrir e pegar os bytes, a transferencia demora mas funciona
+    python3 exercicio2_servidor.py <- Inicia o servidor, precisa da pasta ex2_servidor_recebidos
+    python3 exercicio2_client.py <- Comandos tem o mesmo nome do pdf os arquivos para serem transferidos devem estar na mesma pasta do cliente para ele conseguir abrir e pegar os bytes, a transferencia demora mas funciona, precisa da pasta ex2_cliente_recebidos
