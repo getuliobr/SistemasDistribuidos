@@ -4,7 +4,7 @@
     Creation Date: 12 / 09 / 2022
 """
 
-import socket, threading, hashlib, os
+import socket, hashlib, os
 
 # Lista de usuarios e senhas
 users = {
