@@ -18,10 +18,11 @@ while True:
     receivedPacket, adress = s.recvfrom(1094)
     fileNameLength = struct.unpack("B", receivedPacket[0:1])
     fileName = struct.unpack(f"{fileNameLength}s", receivedPacket[1:1+fileNameLength])
-    flag, packet_number = struct.unpack("BI", recievedPacket[1+fileNameLength : 5+fileNameLength])
-    fileData = struct.unpack("1024s", recievedPacket[5+fileNameLength:])
+    flag, packet_number = struct.unpack("BI", receivedPacket[1+fileNameLength : 5+fileNameLength])
+    fileData = struct.unpack("1024s", receivedPacket[5+fileNameLength:])
 
     if flag == FIRST_PACKAGE:
+        logging.info(f"Recebendo arquivo {fileName} de tamanho {fileData} bytes")
         with open(fileName, "xb") as f:
             f.close()
     
@@ -42,4 +43,7 @@ while True:
             f.close()
         if fileChecksum != fileData:
             os.remove(f"./{fileName}")
+            logging.info(f"Arquivo {fileName} corrompido, removendo")
+        else:
+            logging.info(f"Arquivo {fileName} recebido com sucesso")
 
