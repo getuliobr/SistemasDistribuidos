@@ -1,8 +1,12 @@
 
 
+NAME SIZE [1 byte]
+NAME [3-64 bytes]
+FILE_NAME_SIZE [1 byte]
+FILE_NAME [3-64 byte]
 FLAG [1 byte]
 PACKET_NUMBER [4 bytes]
-FILE_DATA [1019 bytes]
+FILE_DATA [1024 bytes]
 
 Tipos de FLAG:
 0x01 : Primeiro pacote contem o nome do arquivo e tamanho do arquivo
@@ -10,8 +14,12 @@ Tipos de FLAG:
 0X03 : Último pacote que contem o checksum 
 
 
+%+---------------------------------------------------------------+
+%|           NAME_SIZE           |             NAME              |
++---------------------------------------------------------------+
+|        FILE_NAME_SIZE         |           FILE_NAME           |
 +---------------------------------------------------------------+
 |     FLAG      |                 PACKET_NUMBER                 |
 +---------------------------------------------------------------+
-|                           FILE_DATA                           |
+|                           FILEDATA                            |
 +---------------------------------------------------------------+
