@@ -20,10 +20,11 @@ while True:
     fileNameLength, = struct.unpack("B", receivedPacket[0:1])
     fileName, = struct.unpack(f"{fileNameLength}s", receivedPacket[1:1+fileNameLength])
     flag,= struct.unpack("B", receivedPacket[1+fileNameLength : 2+fileNameLength])
-    packet_number, = struct.unpack("I", receivedPacket[2+fileNameLength : 6+fileNameLength])
+    packet_number, = struct.unpack("I", receivedPacket[3+fileNameLength : 7+fileNameLength])
     dataSize = len(receivedPacket)-(1+fileNameLength+1+4)-1
     fileData, = struct.unpack(f"{dataSize}s", receivedPacket[7+fileNameLength :])
 
+    # packet_number = receivedPacket[2+fileNameLength : 6+fileNameLength]
     fileName = fileName.decode("ascii")
 
     if flag == FIRST_PACKAGE:
@@ -32,11 +33,12 @@ while True:
         with open(f"./server_file/{fileName}", "xb") as f:
             f.close()
     
-    #TODO Não está inserindo os bytes no arquivo
+    #TODO Não está inserindo os bytes no arquivo corretamente
     if flag == PACKAGE_DATA:
-        with open(fileName, "rb+") as f:
-            f.seek(FILE_DATA_SIZE * (packet_number+1))
-            f.write(fileData)
+        with open(f'./server_file/{fileName}', "r+b") as f:
+            pos = (packet_number * FILE_DATA_SIZE)
+            f.seek(pos)
+            f.write(bytes(fileData))
             f.close()
     
     if flag == LAST_PACKAGE:

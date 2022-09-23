@@ -23,7 +23,7 @@ def sendHeader(fileName, flag, packet_number, dataSize, data):
                                 , packet_number
                                 , data
                                 )
-                                
+
     s.sendto(packed_request, (ip, portServer))
 
 def userInput():
@@ -38,7 +38,7 @@ def userInput():
             fileSize = os.path.getsize(uInput[1])
             fileSize = fileSize.to_bytes(4, byteorder='big')
             logging.info(f"Enviando arquivo {uInput[1]}")
-            sendHeader(uInput[1], FIRST_PACKAGE, 0, 4, fileSize)
+            sendHeader(uInput[1], FIRST_PACKAGE, 34, 4, fileSize)
             with open(uInput[1], "rb") as f:
                 packet_number = 0
                 while True:
@@ -49,7 +49,9 @@ def userInput():
                     dataSize = len(data)
                     sendHeader(uInput[1], PACKAGE_DATA, packet_number, dataSize, data)
                     packet_number += 1
+                    
                 f.close()
+                print(packet_number)
             fileChecksum = hashlib.sha1()
             with open(uInput[1], "rb") as f:
                 while True:
