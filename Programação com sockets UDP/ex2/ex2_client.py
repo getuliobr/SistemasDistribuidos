@@ -16,15 +16,14 @@ logging.info("Cliente iniciado")
 def sendHeader(fileName, flag, packet_number, dataSize, data):
     fileNameSize = len(fileName)
     fileName = bytes(fileName, 'ascii')
-    print(f"Data = {dataSize}")
-    packed_request = struct.pack(f"B{fileNameSize}sBIH"
+    packed_request = struct.pack(f"B{fileNameSize}sBI{dataSize}s"
                                 , len(fileName)
                                 , fileName
                                 , flag
                                 , packet_number
-                                , dataSize
+                                , data
                                 )
-    print(len(packed_request))
+                                
     s.sendto(packed_request, (ip, portServer))
 
 def userInput():
