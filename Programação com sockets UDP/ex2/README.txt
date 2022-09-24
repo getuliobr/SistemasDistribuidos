@@ -40,7 +40,7 @@ Alunos: Getúlio Coimbra Regis e Igor Lara Oliveira
 
 ->Bibliotecas usadas:
     socket <->> criar o socket
-    hashlib <->> encriptar a senha
+    hashlib <->> checksum
     os <->> navegar no sistema de arquivo
     logging <->> logging
     threading <->> criar threads

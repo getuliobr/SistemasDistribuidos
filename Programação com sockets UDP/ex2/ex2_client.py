@@ -3,10 +3,9 @@
     Autores: Getulio Coimbra Regis e Igor Lara de Oliveira
     Creation Date: 19 / 09 / 2022
 """
-import logging, hashlib,    sys
+import logging, hashlib
 import socket, os, struct
 import threading
-from typing import Type
 from ex2_utils import *
 import time
 
