@@ -15,15 +15,19 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.bind((ip, port))
 logging.info(f"Servidor iniciado na porta {port}")
 
+count_received=  0
+
 while True:
     receivedPacket, adress = s.recvfrom(1094)
     fileNameLength, = struct.unpack("B", receivedPacket[0:1])
     fileName, = struct.unpack(f"{fileNameLength}s", receivedPacket[1:1+fileNameLength])
     flag,= struct.unpack("B", receivedPacket[1+fileNameLength : 2+fileNameLength])
-    packet_number, = struct.unpack("I", receivedPacket[3+fileNameLength : 7+fileNameLength])
-    dataSize = len(receivedPacket)-(1+fileNameLength+1+4)-1
-    fileData, = struct.unpack(f"{dataSize}s", receivedPacket[7+fileNameLength :])
-
+    packet_number, = struct.unpack("4s", receivedPacket[2+fileNameLength : 6+fileNameLength])
+    packet_number = int.from_bytes(packet_number, byteorder='big')
+    dataSize = len(receivedPacket)
+    dataSize = dataSize - 6 - fileNameLength
+    fileData, = struct.unpack(f"{dataSize}s", receivedPacket[6+fileNameLength :])
+    x=len(receivedPacket)
     # packet_number = receivedPacket[2+fileNameLength : 6+fileNameLength]
     fileName = fileName.decode("ascii")
 
@@ -35,6 +39,7 @@ while True:
     
     #TODO Não está inserindo os bytes no arquivo corretamente
     if flag == PACKAGE_DATA:
+        count_received += 1
         with open(f'./server_file/{fileName}', "r+b") as f:
             pos = (packet_number * FILE_DATA_SIZE)
             f.seek(pos)
@@ -42,18 +47,22 @@ while True:
             f.close()
     
     if flag == LAST_PACKAGE:
-        pass
-        # fileChecksum = hashlib.sha1()
-        # with open(fileName, 'rb') as f:
-        #     while True:
-        #         data = f.read(FILE_DATA_SIZE)
-        #         if not data:
-        #             break
-        #         fileChecksum.update(data)
-        #     f.close()
-        # if fileChecksum.digest() != fileData:
-        #     os.remove(f"./server_file/{fileName}")
-        #     logging.info(f"Arquivo {fileName} corrompido, removendo")
-        # else:
-        #     logging.info(f"Arquivo {fileName} recebido com sucesso")
+        fileChecksum = hashlib.sha1()
+        with open(f'./server_file/{fileName}', 'rb') as f:
+            while True:
+                data = f.read(FILE_DATA_SIZE)
+                if not data:
+                    break
+                fileChecksum.update(data)
+            f.close()
+        
+        packed_response = None
+        if fileChecksum.digest() != fileData:
+            os.remove(f"./server_file/{fileName}")
+            logging.info(f"Arquivo {fileName} corrompido, removendo")
+            packed_response = struct.pack("B", UPLOAD_FAILED)
+        else:
+            logging.info(f"Arquivo {fileName} recebido com sucesso")
+            packed_response = struct.pack("B", UPLOAD_SUCCESSFULL)
 
+        s.sendto(packed_response, adress)
