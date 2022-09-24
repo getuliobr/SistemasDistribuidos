@@ -33,7 +33,7 @@ while True:
 
     if flag == FIRST_PACKAGE:
         fileData = int.from_bytes(fileData, byteorder='big')
-        logging.info(f"Recebendo arquivo {fileName} de tamanho {fileData} bytes")
+        logging.info(f"Recebendo arquivo {fileName} do ip {adress} de tamanho {fileData} bytes")
         with open(f"./server_file/{fileName}", "xb") as f:
             f.close()
     

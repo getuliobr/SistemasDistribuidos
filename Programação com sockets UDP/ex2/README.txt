@@ -1,7 +1,5 @@
 
-
-NAME SIZE [1 byte]
-NAME [3-64 bytes]
+Header Length:
 FILE_NAME_SIZE [1 byte]
 FILE_NAME [3-64 byte]
 FLAG [1 byte]
