@@ -1,3 +1,8 @@
+"""
+    Descrição: Arquivo para abertura de um chat com um IP e porta especificos
+    Autores: Getulio Coimbra Regis e Igor Lara de Oliveira
+    Creation Date: 19 / 09 / 2022
+"""
 import socket
 import threading
 import os
