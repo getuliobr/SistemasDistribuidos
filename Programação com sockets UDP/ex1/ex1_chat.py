@@ -7,6 +7,7 @@ import socket
 import threading
 import os
 import struct
+import emoji
 
 from ex1_utils import *
 
@@ -25,8 +26,9 @@ def help():
     print("help - Mostra os comandos disponiveis")
     print("msg - Envia uma mensagem")
     print("emoji - Envia um emoji")
-    print("UrL - Envia um link")
-    print("ECHO - Verificação se o usuario está online")
+    print("url - Envia um link")
+    print("echo - Verificação se o usuario está online")
+    print("emojilist - Link para os emojis possíveis")
     print("quit - Sai do chat")
     print("----------------------------------------------")
 
@@ -41,6 +43,9 @@ def inputThread():
         if userInput[0] == "help": 
             help()
         
+        if userInput[0] == "emojilist":
+            print("Link: https://carpedm20.github.io/emoji/")
+
         # Comando quit
         if userInput[0] == "quit":
             os._exit(1)
@@ -66,6 +71,8 @@ def inputThread():
             if len(userInput[1]) > 255: # Trata o caso de a mensagem ser maior que 255 bytes
                 print("Mensagem muito grande")
                 continue
+            
+
 
             msgInBytes = bytes(userInput[1], 'utf-8') # Codifica a mensagem em bytes importante ser em utf-8 por causa dos emojis
             packedRequest = struct.pack(f"BB{len(name)}sB{len(userInput[1])}s",
@@ -137,7 +144,8 @@ def receiveThread():
         if msgType == MESSAGE_TYPE_EMOJI:
             msg = msg.decode('utf-8')
             name = name.decode('ascii')
-            print(f"{name} enviou o emoji {msg}")
+            # print(f"{name} enviou o emoji {msg}")        # Print sem a biblioteca emoji
+            print(emoji.emojize(f"{name} enviou o emoji {msg}")) # Print com a biblioteca emoji
         
         # Se a mensagem for do tipo echo manda uma mensagem de pong de volta e imprime que recebeu um ping
         if msgType == MESSAGE_TYPE_ECHO:
