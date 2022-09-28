@@ -42,7 +42,7 @@ while True:
         # Se o arquivo não existir, cria o arquivo e seta a variavel de verificação para continuar recebendo pacotes
         try:
             fileData = int.from_bytes(fileData, byteorder='big')
-            logging.info(f"Recebendo arquivo {fileName} do ip {adress} de tamanho {fileData} bytes")
+            logging.info(f"Recebendo arquivo {fileName} do ip {adress} de tamanho {convertBytesNumber(fileData)}")
             with open(f"./server_file/{fileName}", "xb") as f:
                 f.close()
             canSave = 1
