@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+message Disciplina{
+    string codigo = 1;
+    string nome = 2;
+    string professor = 3;
+    int32 cod_curso = 4;
+}

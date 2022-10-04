@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+message Matricula{
+    int32 RA = 1;
+    int32 cod_disciplina = 2;
+    int32 ano = 3;
+    int32 semestre = 4;
+    float nota = 5;
+    int32 faltas = 6;
+}
