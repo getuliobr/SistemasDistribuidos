@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option go_package = "./Classes";
+
 message Aluno{
     int32 RA = 1;
     string nome = 2;

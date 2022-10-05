@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option go_package = "./Classes";
+
 message Disciplina{
     string codigo = 1;
     string nome = 2;

@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option go_package = "./Classes";
+
 message Curso{
     int32 id = 1;
     string nome = 2;
