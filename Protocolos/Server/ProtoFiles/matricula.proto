@@ -4,7 +4,7 @@ option go_package = "./Classes";
 
 message Matricula{
     int32 RA = 1;
-    int32 cod_disciplina = 2;
+    string cod_disciplina = 2;
     int32 ano = 3;
     int32 semestre = 4;
     float nota = 5;

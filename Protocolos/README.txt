@@ -1,0 +1,15 @@
+
+Type command:
+0x01 -> Create
+0x02 -> Read
+0x03 -> List
+0x04 -> Update
+0x05 -> Delete
+
+
+Type class:
+0x10 -> Curso
+0x11 -> Disciplina
+0x12 -> Aluno
+0x13 -> Matricula
+
