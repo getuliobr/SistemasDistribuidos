@@ -13,7 +13,7 @@ import (
 	proto "github.com/golang/protobuf/proto"
 )
 
-func input_matricula(conn net.Conn, typeCommand int32){
+func input_matricula(conn net.Conn, typeCommand int32) {
 	var ra int32
 	var codDisciplina string
 	var ano int32
@@ -35,24 +35,26 @@ func input_matricula(conn net.Conn, typeCommand int32){
 	create_matricula(conn, ra, codDisciplina, ano, semestre, nota, faltas)
 }
 
-
 func create_matricula(conn net.Conn, ra int32, codDisciplina string, ano int32, semestre int32, nota float32, faltas int32) {
 	// TODO
 	newMatricula := &classes.Matricula{
-		RA:         ra,
+		RA:            ra,
 		CodDisciplina: codDisciplina,
-		Ano:        ano,
-		Semestre:   semestre,
-		Nota:       nota,
-		Faltas:     faltas,
+		Ano:           ano,
+		Semestre:      semestre,
+		Nota:          nota,
+		Faltas:        faltas,
 	}
 
-	fmt.Println(newMatricula)
-	matriculaMarshal := proto.MarshalTextString(newMatricula)
+	matriculaMarshal, err := proto.Marshal(newMatricula)
+	if err != nil {
+		log.Fatal("marshaling error: ", err)
+		return
+	}
 	binary.Write(conn, binary.LittleEndian, int8(0x01))
 	binary.Write(conn, binary.LittleEndian, int8(0x13))
 	binary.Write(conn, binary.LittleEndian, int32(len(matriculaMarshal)))
-	fmt.Fprint(conn, matriculaMarshal)
+	conn.Write(matriculaMarshal)
 }
 func main() {
 
@@ -64,13 +66,12 @@ func main() {
 
 	log.Println("Connected to server")
 
-	for{
+	for {
 		var input string
 
 		fmt.Scanln(&input)
 
-
-		if input == "exit" {	
+		if input == "exit" {
 			os.Exit(0)
 		}
 
@@ -86,16 +87,16 @@ func main() {
 				input_matricula(con, 0x01)
 			}
 		}
-		
-		if input == "read"{
+
+		if input == "read" {
 			continue
 		}
 
-		if input == "update"{
+		if input == "update" {
 			continue
 		}
 
-		if input == "delete"{
+		if input == "delete" {
 			continue
 		}
 	}

@@ -4,7 +4,7 @@
     Creation Date: 12 / 09 / 2022
 """
 
-import socket, threading, struct, os, logging, google.protobuf.text_format
+import socket, threading, struct, os, logging
 import ProtoFiles.matricula_pb2 as matricula_pb2
 
 from server_utils import CLASS_MATRICULA, COMMAND_CREATE
@@ -46,10 +46,10 @@ class Client:
                 sizeType = struct.unpack('I', sizeType)[0]
                 print(type, sizeType)
                 if type == CLASS_MATRICULA:
-                    matriculaUnmarshaling = matricula_pb2.Matricula().MergeFromString(self.con.recv(sizeType))
-                    print(matriculaUnmarshaling)
-                    # text_proto = google.protobuf.text_format.MessageToString(self.con.recv(sizeType))
-                    # print(matriculaUnmarshaling)
+                    data = self.con.recv(sizeType)
+                    matricula = matricula_pb2.Matricula()
+                    matricula.ParseFromString(data)
+                    print(matricula)
 
             
 
@@ -60,8 +60,12 @@ orig = (HOST, PORT) # Define o endereço do servidor
 tcp.bind(orig) # Associa o socket ao endereço
 tcp.listen() # Coloca o socket em modo de escuta
 while True:
-    logging.info("Servidor aguardando conexão ...")
-    con, cliente = tcp.accept() # Espera uma conexão
-    logging.info(f"Cliente ({cliente}) conectado --- Criando thread")
-    client = threading.Thread(target=handleClient, args=(con, cliente,)) # Cria uma thread para o cliente
-    client.start()
+    try:
+        logging.info("Servidor aguardando conexão ...")
+        con, cliente = tcp.accept() # Espera uma conexão
+        logging.info(f"Cliente ({cliente}) conectado --- Criando thread")
+        client = threading.Thread(target=handleClient, args=(con, cliente,)) # Cria uma thread para o cliente
+        client.start()
+    except KeyboardInterrupt:
+        print("Servidor encerrado")
+        break
