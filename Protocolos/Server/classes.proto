@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option go_package = "classes/";
+
+message Aluno{
+    int32 RA = 1;
+    string Nome = 2;
+    int32 Periodo = 3;
+    int32 Cod_curso = 4;
+}
+
+message Curso{
+    int32 Id = 1;
+    string Nome = 2;
+}
+
+message Disciplina{
+    string Codigo = 1;
+    string Nome = 2;
+    string Professor = 3;
+    int32 Cod_curso = 4;
+}
+
+message Matricula{
+    int32 RA = 1;
+    string Cod_disciplina = 2;
+    int32 Ano = 3;
+    int32 Semestre = 4;
+    float Nota = 5;
+    int32 Faltas = 6;
+}
