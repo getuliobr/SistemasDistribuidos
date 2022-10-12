@@ -2,12 +2,26 @@ import sqlite3
 from server_utils import *
 
 
-db = sqlite3.connect('./DB/db.db')
+db = sqlite3.connect('db.db', check_same_thread=False)
 cursor = db.cursor()
 
 def select_all(type):
-    cursor.execute("SELECT * FROM " + type)
+    cursor.execute(f"SELECT * FROM {type.upper()}")
     return cursor.fetchall()
+
+def select_table(type, data):
+    if type == CLASS_MATRICULA:
+        cursor.execute("SELECT * FROM Matricula WHERE ra = ? AND cod_disciplina = ? AND ano = ? AND semestre = ?", data)
+        return cursor.fetchall()
+    if type == CLASS_ALUNO:
+        cursor.execute("SELECT * FROM Aluno WHERE ra = ?", data)
+        return cursor.fetchall()
+    if type == CLASS_CURSO:
+        cursor.execute("SELECT * FROM Curso WHERE codigo = ?", data)
+        return cursor.fetchall()
+    if type == CLASS_DISCIPLINA:
+        cursor.execute("SELECT * FROM Disciplina WHERE codigo = ?", data)
+        return cursor.fetchall()
 
 def insert_table(type, data):
     if type == CLASS_MATRICULA:

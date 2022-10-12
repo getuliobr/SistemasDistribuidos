@@ -5,6 +5,7 @@ Type command:
 0x03 -> List
 0x04 -> Update
 0x05 -> Delete
+0x06 -> ListALunosFromDiscplina
 
 
 Type class:
