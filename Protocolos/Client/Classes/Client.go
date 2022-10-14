@@ -222,6 +222,57 @@ func list_aluno(conn net.Conn) {
 
 //TODO
 func list_disciplina(conn net.Conn){
+	fmt.Println("Digite o Ano:")
+	var ano int32
+	fmt.Scanln(&ano)
+	fmt.Println("Digite o Semestre:")
+	var semestre int32
+	fmt.Scanln(&semestre)
+	binary.Write(conn, binary.LittleEndian, int8(COMMAND_LISTADNFFROMAS))
+	binary.Write(conn, binary.LittleEndian, ano)
+	binary.Write(conn, binary.LittleEndian, semestre)
+
+	buffer := make([]byte, 4)
+	conn.Read(buffer)
+	size := binary.LittleEndian.Uint32(buffer)
+	fmt.Println("--------------------")
+	for i := uint32(0); i < size; i ++ {
+
+		buffer = make([]byte, 4)
+		conn.Read(buffer)
+		sizeDisciplina := binary.LittleEndian.Uint32(buffer)
+		buffer = make([]byte, sizeDisciplina)
+		conn.Read(buffer)
+		disciplina := &classes.Disciplina{}
+		err := proto.Unmarshal(buffer, disciplina)
+		if err != nil {
+			log.Fatal("unmarshaling error: ", err)
+		}
+
+		buffer = make([]byte, 4)
+		conn.Read(buffer)
+		sizeMatricula := binary.LittleEndian.Uint32(buffer)
+		buffer = make([]byte, sizeMatricula)
+		conn.Read(buffer)
+		matricula := &classes.Matricula{}
+		err = proto.Unmarshal(buffer, matricula)
+		if err != nil {
+			log.Fatal("unmarshaling error: ", err)
+		}
+
+		buffer = make([]byte, 4)
+		conn.Read(buffer)
+		sizeAluno := binary.LittleEndian.Uint32(buffer)
+		buffer = make([]byte, sizeAluno)
+		conn.Read(buffer)
+		aluno := &classes.Aluno{}
+		err = proto.Unmarshal(buffer, aluno)
+		if err != nil {
+			log.Fatal("unmarshaling error: ", err)
+		}
+
+		fmt.Printf("|Disciplina: %-3s|RA: %-3d|Aluno: %-3s|Nota: %-3f|Faltas: %-3d|\n",disciplina.GetNome(), aluno.GetRA(), aluno.GetNome(), matricula.GetNota(), matricula.GetFaltas())
+	}
 
 }
 
@@ -269,6 +320,9 @@ func main() {
 			}
 			if strings.Compare(typeClass, "aluno") == 0 {
 				list_aluno(con)
+			}
+			if strings.Compare(typeClass, "disciplinas_ano") == 0 {
+				list_disciplina(con)
 			}
 		}
 

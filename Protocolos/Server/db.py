@@ -14,13 +14,13 @@ def select_table(type, data):
         cursor.execute("SELECT * FROM Matricula WHERE ra = ? AND cod_disciplina = ? AND ano = ? AND semestre = ?", data)
         return cursor.fetchall()
     if type == CLASS_ALUNO:
-        cursor.execute("SELECT * FROM Aluno WHERE ra = ?", data)
+        cursor.execute(f"SELECT * FROM Aluno WHERE ra = '{data}'")
         return cursor.fetchall()
     if type == CLASS_CURSO:
         cursor.execute("SELECT * FROM Curso WHERE codigo = ?", data)
         return cursor.fetchall()
     if type == CLASS_DISCIPLINA:
-        cursor.execute("SELECT * FROM Disciplina WHERE codigo = ?", data)
+        cursor.execute(f"SELECT * FROM Disciplina WHERE codigo = '{data}'")
         return cursor.fetchall()
 
 def insert_table(type, data):
