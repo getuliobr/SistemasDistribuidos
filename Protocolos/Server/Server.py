@@ -220,20 +220,24 @@ class Client:
                 semestre = self.con.recv(4) #Recebe o semestre da matricula
                 semestre = struct.unpack('I', semestre)[0]
 
+                # Busca disciplina, matricula e aluno
                 cursor.execute("SELECT d.codigo, d.nome, m.ra, a.nome, m.nota, m.faltas from Matricula m INNER JOIN Aluno a INNER JOIN Disciplina d WHERE m.ra = a.ra AND d.codigo = m.cod_disciplina AND m.ano = ? AND m.semestre = ? ", (ano, semestre))
                 values = cursor.fetchall()
                 
+                # Envia a quantidade de resultados encontrados
                 self.con.send(struct.pack('I', len(values)))
-                for value in values:
-                    disciplina = select_table(CLASS_DISCIPLINA, value[0])
-                    matricula = select_table(CLASS_MATRICULA, (value[2], value[0], ano, semestre))
-                    aluno = select_table(CLASS_ALUNO, value[2])
+                for value in values: # Para todo valor encontrado faça
+                    disciplina = select_table(CLASS_DISCIPLINA, value[0]) # Busca disciplina no Banco
+                    matricula = select_table(CLASS_MATRICULA, (value[2], value[0], ano, semestre)) # Busca matricula no Banco
+                    aluno = select_table(CLASS_ALUNO, value[2]) # Busca aluno no banco
                     
+                    # Cria objeto de disciplina
                     disciplina = Disciplina(Codigo=disciplina[0][0],
                                             Nome=disciplina[0][1],
                                             Professor=disciplina[0][2],
                                             Cod_curso=disciplina[0][3],)
                     
+                    # Cria objeto de matricula
                     matricula = Matricula(RA=matricula[0][0],
                                         Cod_disciplina=matricula[0][1],
                                         Ano=matricula[0][2],
@@ -241,25 +245,26 @@ class Client:
                                         Nota=matricula[0][4],
                                         Faltas=matricula[0][5])
 
+                    # Cria objeto de aluno
                     aluno = Aluno(RA=aluno[0][0],
                                 Nome=aluno[0][1],
                                 Periodo=aluno[0][2],
                                 Cod_curso=aluno[0][3])
                     
-                    data = disciplina.SerializeToString()
-                    size = len(data)
-                    self.con.send(struct.pack('I', size))
-                    self.con.send(data)
+                    data = disciplina.SerializeToString() # Converte objeto de disciplina em bytes
+                    size = len(data) # Variavel de tamanho do objeto convertido
+                    self.con.send(struct.pack('I', size)) # Envia tamanho do objeto disciplina convertido
+                    self.con.send(data) # Envia objeto disciplina convertido
 
-                    data = matricula.SerializeToString()
-                    size = len(data)
-                    self.con.send(struct.pack('I', size))
-                    self.con.send(data)
+                    data = matricula.SerializeToString() # Converte objeto de matricula em bytes
+                    size = len(data) # Variavel de tamanho do objeto convertido
+                    self.con.send(struct.pack('I', size)) # Envia tamanho do objeto matricula convertido
+                    self.con.send(data) # Envia objeto matricula convertido
 
-                    data = aluno.SerializeToString()
-                    size = len(data)
-                    self.con.send(struct.pack('I', size))
-                    self.con.send(data)
+                    data = aluno.SerializeToString() # Converte objeto de aluno em bytes
+                    size = len(data) # Variavel de tamanho do objeto convertido
+                    self.con.send(struct.pack('I', size)) # Envia tamanho do objeto de aluno convertido
+                    self.con.send(data) # Envia objeto aluno convertido
 
                     
 
