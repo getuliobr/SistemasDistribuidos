@@ -45,8 +45,8 @@ class Client:
                 sizeType = struct.unpack('I', sizeType)[0]
                 data = self.con.recv(sizeType) #Recebe o objeto a ser criado
                 if type == CLASS_MATRICULA:
-                    matricula = Matricula()
-                    matricula.ParseFromString(data)
+                    matricula = Matricula() # Cria objeto da classe Matricula
+                    matricula.ParseFromString(data) # Faz o unmarshalling
                     try:
                         insert_table(CLASS_MATRICULA, (matricula.RA,
                                             matricula.Cod_disciplina,
@@ -59,8 +59,8 @@ class Client:
                         logging.error(e)
 
                 if type == CLASS_ALUNO:
-                    aluno = Aluno()
-                    aluno.ParseFromString(data)
+                    aluno = Aluno() # Cria objeto da classe Aluno
+                    aluno.ParseFromString(data) # Faz o unmarshalling
                     try:
                         insert_table(CLASS_ALUNO, (aluno.Ra,
                                             aluno.Nome,
@@ -70,8 +70,8 @@ class Client:
                         logging.error(e)
                 
                 if type == CLASS_DISCIPLINA:
-                    disciplina = Disciplina()
-                    disciplina.ParseFromString(data)
+                    disciplina = Disciplina() # Cria objeto da classe Disciplina
+                    disciplina.ParseFromString(data) # Faz o unmarshalling
                     try:
                         insert_table(CLASS_DISCIPLINA, (disciplina.Cod_disciplina,
                                             disciplina.Nome,
@@ -80,8 +80,8 @@ class Client:
                         logging.error(e)
                 
                 if type == CLASS_CURSO:
-                    curso = Curso()
-                    curso.ParseFromString(data)
+                    curso = Curso() # Cria objeto da classe Curso
+                    curso.ParseFromString(data) # Faz o unmarshalling
                     try:
                         insert_table(CLASS_CURSO, (curso.Cod_curso,
                                             curso.Nome))
@@ -96,43 +96,43 @@ class Client:
                 if type == CLASS_MATRICULA:
                     matriculas = select_all("Matricula")
                     size = len(matriculas)
-                    self.con.send(struct.pack('I', size))
-                    for matricula in matriculas:
+                    self.con.send(struct.pack('I', size)) # Envia a quantidade de matriculas
+                    for matricula in matriculas: # Envia matricula por matricula
                         matricula = Matricula(RA=matricula[0],
                                     Cod_disciplina=matricula[1],
                                     Ano=matricula[2],
                                     Semestre=matricula[3],
                                     Nota=matricula[4],
-                                    Faltas=matricula[5])
-                        data = matricula.SerializeToString()
-                        size = len(data)
-                        self.con.send(struct.pack('I', size))    
-                        self.con.send(data)
+                                    Faltas=matricula[5]) # Cria um objeto do tipo Matricula
+                        data = matricula.SerializeToString() # Faz o marshalling
+                        size = len(data) 
+                        self.con.send(struct.pack('I', size)) # Envia o tamanho do objeto
+                        self.con.send(data) # Envia o objeto
                 
                 if type == CLASS_DISCIPLINA:
                     disciplinas = select_all("Disciplina")
                     for disciplina in disciplinas:
                         disciplina = Disciplina(Cod_disciplina=disciplina[0],
                                                             Nome=disciplina[1],
-                                                            Carga_horaria=disciplina[2])
-                        data = disciplina.SerializeToString()
-                        size = len(data)
-                        self.con.send(struct.pack('B', COMMAND_LIST))
-                        self.con.send(struct.pack('B', CLASS_DISCIPLINA))
-                        self.con.send(struct.pack('I', size))
-                        self.con.send(data)
+                                                            Carga_horaria=disciplina[2]) # Cria um objeto do tipo Disciplina
+                        data = disciplina.SerializeToString() # Faz o marshalling
+                        size = len(data) # Pega o tamanho do objeto
+                        self.con.send(struct.pack('B', COMMAND_LIST)) # Envia que e do tipo list
+                        self.con.send(struct.pack('B', CLASS_DISCIPLINA)) # Fala que e do tipo Disciplina
+                        self.con.send(struct.pack('I', size)) # Envia o tamanho do objeto
+                        self.con.send(data) # Envia o objeto
                 
                 if type == CLASS_CURSO:
                     cursos = select_all("Curso")
                     for curso in cursos:
                         curso = matricula_pb2.Curso(Cod_curso=curso[0],
-                                                    Nome=curso[1])
-                        data = curso.SerializeToString()
-                        size = len(data)
-                        self.con.send(struct.pack('B', COMMAND_LIST))
-                        self.con.send(struct.pack('B', CLASS_CURSO))
-                        self.con.send(struct.pack('I', size))
-                        self.con.send(data)
+                                                    Nome=curso[1]) # Cria um objeto do tipo Curso
+                        data = curso.SerializeToString() # Faz o marshalling
+                        size = len(data) # Pega o tamanho do objeto
+                        self.con.send(struct.pack('B', COMMAND_LIST)) # Envia que e do tipo list
+                        self.con.send(struct.pack('B', CLASS_CURSO))  # Fala que e do tipo Curso
+                        self.con.send(struct.pack('I', size)) # Envia o tamanho do objeto
+                        self.con.send(data) # Envia o objeto
             
             if command == COMMAND_UPDATE:
                 print("Recebeu comando de atualização")
@@ -143,11 +143,10 @@ class Client:
                 sizeType = struct.unpack('I', sizeType)[0]
                 data = self.con.recv(sizeType) #Recebe o objeto a ser atualizado
 
-
-                # TODO Enviar response de sucesso ou falha
+                # Resumindo cria um objeto do tipo da classe e faz unmarshalling no objeto recebido
                 if type == CLASS_MATRICULA:
-                    matricula = Matricula()
-                    matricula.ParseFromString(data)
+                    matricula = Matricula() # Cria objeto
+                    matricula.ParseFromString(data) # Unmarshalling
                     try:
                         update_table(CLASS_MATRICULA, (matricula.nota,
                                                 matricula.faltas,
@@ -159,8 +158,8 @@ class Client:
                         logging.error(e)
                 
                 if type == CLASS_ALUNO:
-                    aluno = Aluno()
-                    aluno.ParseFromString(data)
+                    aluno = Aluno() # Cria objeto
+                    aluno.ParseFromString(data) # Unmarshalling
                     try:
                         update_table(CLASS_ALUNO, (aluno.nome,
                                                 aluno.periodo,
@@ -170,8 +169,8 @@ class Client:
                         logging.error(e)
                 
                 if type == CLASS_DISCIPLINA:
-                    disciplina = Disciplina()
-                    disciplina.ParseFromString(data)
+                    disciplina = Disciplina() # Cria objeto
+                    disciplina.ParseFromString(data) # Unmarshalling
                     try:
                         update_table(CLASS_DISCIPLINA, (disciplina.Nome,
                                                 disciplina.Carga_horaria,
@@ -180,8 +179,8 @@ class Client:
                         logging.error(e)
                 
                 if type == CLASS_CURSO:
-                    curso = Curso()
-                    curso.ParseFromString(data)
+                    curso = Curso() # Cria objeto
+                    curso.ParseFromString(data) # Unmarshalling
                     try:
                         update_table(CLASS_CURSO, (curso.nome,
                                                 curso.cod_curso,
@@ -199,19 +198,19 @@ class Client:
                 ano = struct.unpack('I', ano)[0]
                 semestre = self.con.recv(4) #Recebe o semestre da matricula
                 semestre = struct.unpack('I', semestre)[0]
-
+                # Busca os alunos do ano, semestre e disciplina
                 cursor.execute(f"SELECT ra, nome, periodo, cod_curso from Aluno WHERE RA IN (SELECT RA FROM MATRICULA WHERE cod_disciplina = ? AND ano = ? AND semestre = ?)", (disciplina, ano, semestre))
                 alunos = cursor.fetchall()
-                self.con.send(struct.pack('I', len(alunos)))
-                for aluno in alunos:
+                self.con.send(struct.pack('I', len(alunos))) # Envia a quantidade de alunos
+                for aluno in alunos: # Para todo aluno faça isso:
                     aluno = Aluno(RA=aluno[0],
                             Nome=aluno[1],
                             Periodo=aluno[2],
-                            Cod_curso=aluno[3])
-                    data = aluno.SerializeToString()
-                    size = len(data)
-                    self.con.send(struct.pack('I', size))
-                    self.con.send(data)
+                            Cod_curso=aluno[3]) # Cria o objeto Aluno com os dados preenchidos
+                    data = aluno.SerializeToString() # Faz o marshalling
+                    size = len(data) # Pega o tamanho
+                    self.con.send(struct.pack('I', size)) # Envia o tamanho
+                    self.con.send(data) # Envia o objeto
             
 
             #TODO
@@ -330,7 +329,7 @@ while True:
         con, cliente = tcp.accept() # Espera uma conexão
         logging.info(f"Cliente ({cliente}) conectado --- Criando thread")
         client = threading.Thread(target=handleClient, args=(con, cliente,)) # Cria uma thread para o cliente
-        client.start()
+        client.start() # Inicia a thread
     except KeyboardInterrupt:
         print("Servidor encerrado")
         break
