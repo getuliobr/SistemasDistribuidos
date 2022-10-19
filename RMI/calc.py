@@ -7,3 +7,9 @@ class CalcService:
     
     def subtracao(self, a, b):
         return a - b
+
+    def multiplicacao(self, a, b):
+        return a * b
+
+    def divisao(self, a, b):
+        return a / b
