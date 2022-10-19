@@ -1,7 +1,7 @@
 import Pyro5.api
 
 @Pyro5.api.expose
-class CalcService:
+class Calculadora:
     def soma(self, a, b):
         return a + b
     
