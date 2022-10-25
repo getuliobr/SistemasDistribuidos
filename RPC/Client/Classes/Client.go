@@ -17,16 +17,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("did not connect: %s", err)
 	}
-	defer conn.Close()	
-	
+	defer conn.Close()
+
 	usr := classes.NewTesteServiceClient(conn)
-	
+
 	for {
-		var input string 
+		var input string
 		fmt.Println("Digite o comando:")
 		fmt.Scanln(&input)
 
-		if input == "insertMatricula"{
+		if input == "insertMatricula" {
 			var ra int32
 			var codDisciplina string
 			var ano int32
@@ -53,7 +53,7 @@ func main() {
 				Nota:          nota,
 				Faltas:        faltas,
 			}
-			
+
 			response, err := usr.AddMatricula(context.Background(), newMatricula)
 			if err != nil {
 				log.Fatalf("Erro no CreateMatricula: %s", err)
@@ -62,7 +62,7 @@ func main() {
 			log.Println(response)
 		}
 
-		if input == "updateNota"{
+		if input == "updateNota" {
 			var ra int32
 			var codDisciplina string
 			var ano int32
@@ -92,8 +92,8 @@ func main() {
 			log.Printf("Nota atualizada:")
 			log.Println(response)
 		}
-		
-		if input == "updateFaltas"{
+
+		if input == "updateFaltas" {
 			var ra int32
 			var codDisciplina string
 			var ano int32
@@ -124,7 +124,7 @@ func main() {
 			log.Println(response)
 		}
 
-		if input == "getAlunos"{
+		if input == "getAlunos" {
 			var codDisciplina string
 			var ano int32
 			var semestre int32
@@ -144,13 +144,17 @@ func main() {
 			if err != nil {
 				log.Fatalf("Erro no GetAlunos: %s", err)
 			}
-			log.Printf("Lista de Alunos:")
-			for _, aluno := range response.Alunos {
-				log.Println(aluno)
+			if len(response.Alunos) == 0 {
+				log.Printf("Nenhum aluno encontrado")
+			} else {
+				log.Printf("Lista de Alunos:")
+				for _, aluno := range response.Alunos {
+					log.Println(aluno)
+				}
 			}
 		}
 
-		if input == "getDisciplinas"{	
+		if input == "getDisciplinas" {
 			var ano int32
 			var semestre int32
 			fmt.Println("Digite o ano:")
@@ -166,10 +170,18 @@ func main() {
 			if err != nil {
 				log.Fatalf("Erro no GetDisciplinas: %s", err)
 			}
-			log.Printf("Lista de Disciplinas:")
-			for _, disciplina := range response.Disciplinas {
-				log.Println(disciplina)
+			if len(response.Disciplinas) == 0 {
+				log.Printf("Nenhuma disciplina encontrada")
+			} else {
+				log.Printf("Lista de Disciplinas:")
+				for _, disciplina := range response.Disciplinas {
+					log.Println(disciplina)
+				}
 			}
+		}
+
+		if input == "sair" {
+			break
 		}
 	}
 }
