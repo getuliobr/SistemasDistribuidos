@@ -45,7 +45,7 @@ class TesteService(classes_pb2_grpc.TesteServiceServicer):
             alunos = cursor.fetchall()
             response = classes_pb2.AlunoResponse()
             for aluno in alunos:
-                response.alunos.append(classes_pb2.Aluno(ra=aluno[0], nome=aluno[1], periodo=aluno[2], cod_curso=aluno[3]))
+                response.Alunos.append(classes_pb2.Aluno(RA=aluno[0], Nome=aluno[1], Periodo=aluno[2], Cod_curso=aluno[3]))
 
             logging.info("Alunos selecionados com sucesso")
             return response
@@ -59,7 +59,7 @@ class TesteService(classes_pb2_grpc.TesteServiceServicer):
             values = cursor.fetchall()
             response = classes_pb2.DisciplinaResponse()
             for value in values:
-                response.disciplinas.append(classes_pb2.Disciplina(codigo=value[0], nome=value[1], ra=value[2], nome_aluno=value[3], nota=value[4], faltas=value[5]))
+                response.Disciplinas.append(classes_pb2.DisciplinaNomesNotasEFaltas(Cod_disciplina=value[0], Nome=value[1], Nota=value[4], Faltas=value[5]))
             logging.info("Disciplinas selecionadas com sucesso")
             return response
         except Exception as e:
