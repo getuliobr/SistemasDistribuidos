@@ -41,8 +41,11 @@ def insert_table(type, data):
         db.commit()
 # Atualiza dados em determinada tabela
 def update_table(type, data):
-    if type == CLASS_MATRICULA:
-        cursor.execute("UPDATE Matricula SET nota = ?, faltas = ? WHERE ra = ? AND cod_disciplina = ? AND ano = ? AND semestre = ?", data)
+    if type == CLASS_MATRICULA_NOTA:
+        cursor.execute("UPDATE Matricula SET nota = ? WHERE ra = ? AND cod_disciplina = ? AND ano = ? AND semestre = ?", data)
+        db.commit()
+    if type == CLASS_MATRICULA_FALTAS:
+        cursor.execute("UPDATE Matricula SET faltas = ? WHERE ra = ? AND cod_disciplina = ? AND ano = ? AND semestre = ?", data)
         db.commit()
     if type == CLASS_ALUNO:
         cursor.execute("UPDATE Aluno SET nome = ?, periodo = ?, cod_curso = ? WHERE ra = ?", data)
