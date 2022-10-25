@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+option go_package = "./classes";
+
+message Aluno{
+    int32 RA = 1;
+    string Nome = 2;
+    int32 Periodo = 3;
+    int32 Cod_curso = 4;
+}
+
+message Curso{
+    int32 Id = 1;
+    string Nome = 2;
+}
+
+message Disciplina{
+    string Codigo = 1;
+    string Nome = 2;
+    string Professor = 3;
+    int32 Cod_curso = 4;
+}
+
+message Matricula{
+    int32 RA = 1;
+    string Cod_disciplina = 2;
+    int32 Ano = 3;
+    int32 Semestre = 4;
+    float Nota = 5;
+    int32 Faltas = 6;
+}
+
+message UpdateNotaRequest{
+    int32 RA = 1;
+    string Cod_disciplina = 2;
+    int32 Ano = 3;
+    int32 Semestre = 4;
+    float Nota = 5;
+}
+
+message UpdateFaltasRequest{
+    int32 RA = 1;
+    string Cod_disciplina = 2;
+    int32 Ano = 3;
+    int32 Semestre = 4;
+    int32 Faltas = 5;
+}
+
+service TesteService{
+    rpc AddMatricula(Matricula) returns (Matricula);
+    rpc UpdateNota(UpdateNotaRequest) returns (Matricula);
+    rpc UpdateFaltas(UpdateFaltasRequest) returns (Matricula);
+    rpc GetAlunos(AlunoRequest) returns (AlunoResponse);
+    rpc GetDisciplinas(DisciplinaRequest) returns (DisciplinaResponse);
+}
+
+message AlunoRequest{
+    string Cod_disciplina = 1;
+    int32 Ano = 2;
+    int32 Semestre = 3;
+}
+
+message AlunoResponse{
+    repeated Aluno Alunos = 1;
+}
+
+message DisciplinaRequest{
+    int32 Ano = 1;
+    int32 Semestre = 2;
+}
+
+message DisciplinaNomesNotasEFaltas{
+    string Cod_disciplina = 1;
+    string Nome = 2;
+    float Nota = 3;
+    int32 Faltas = 4;
+}
+
+message DisciplinaResponse{
+    repeated DisciplinaNomesNotasEFaltas Disciplinas = 1;
+}
