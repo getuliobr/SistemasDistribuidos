@@ -20,15 +20,19 @@ class TesteService(classes_pb2_grpc.TesteServiceServicer):
             logging.info("Matricula inserida com sucesso")
         except Exception as e:
             logging.error("Erro ao inserir matricula:", e)
-        return request
+            return classes_pb2.Matricula(RA=0)
+        return classes_pb2.Matricula(RA=1)
 
     def UpdateNota(self, request, context):
         try:
             update_table(CLASS_MATRICULA_NOTA, (request.Nota, request.RA, request.Cod_disciplina, request.Ano, request.Semestre))
+            a = select_table(CLASS_MATRICULA, (request.RA, request.Cod_disciplina, request.Ano, request.Semestre))[0]
+            
             logging.info("Nota atualizada com sucesso")
         except Exception as e:
             logging.error("Erro ao atualizar nota:", e)
-        return classes_pb2.Matricula()
+            return classes_pb2.Matricula(RA=0)
+        return classes_pb2.Matricula(RA=1)
 
     def UpdateFaltas(self, request, context):
         try:
@@ -36,8 +40,8 @@ class TesteService(classes_pb2_grpc.TesteServiceServicer):
             logging.info("Faltas atualizadas com sucesso")
         except Exception as e:
             logging.error("Erro ao atualizar faltas:", e)
-        
-        return classes_pb2.Matricula()
+            return classes_pb2.Matricula(RA=0)
+        return classes_pb2.Matricula(RA=1)
 
     def GetAlunos(self, request, context):
         try:

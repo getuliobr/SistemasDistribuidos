@@ -58,8 +58,11 @@ func main() {
 			if err != nil {
 				log.Fatalf("Erro no CreateMatricula: %s", err)
 			}
-			log.Printf("Matricula criada:")
-			log.Println(response)
+			if response.RA == 1 {
+				fmt.Println("Matricula criada com sucesso!")
+			} else {
+				fmt.Println("Erro ao criar matricula!")
+			}
 		}
 
 		if input == "updateNota" {
@@ -89,8 +92,11 @@ func main() {
 			if err != nil {
 				log.Fatalf("Erro no UpdateNota: %s", err)
 			}
-			log.Printf("Nota atualizada:")
-			log.Println(response)
+			if response.RA == 1 {
+				fmt.Println("Nota atualizada com sucesso!")
+			} else {
+				fmt.Println("Erro ao atualizar nota!")
+			}
 		}
 
 		if input == "updateFaltas" {
@@ -120,8 +126,11 @@ func main() {
 			if err != nil {
 				log.Fatalf("Erro no UpdateFaltas: %s", err)
 			}
-			log.Printf("Faltas atualizadas:")
-			log.Println(response)
+			if response.RA == 1 {
+				fmt.Println("Faltas atualizadas com sucesso!")
+			} else {
+				fmt.Println("Erro ao atualizar faltas!")
+			}
 		}
 
 		if input == "getAlunos" {
