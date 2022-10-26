@@ -1,3 +1,8 @@
+"""
+    Descrição: Utilitarios para o servidor
+    Autores: Getulio Coimbra Regis e Igor Lara de Oliveira
+    Creation Date: 26 / 10 / 2022
+"""
 
 # Tipo dos comandos
 

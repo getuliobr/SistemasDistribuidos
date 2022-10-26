@@ -1,3 +1,10 @@
+"""
+    Descrição: Comandos do banco de dados
+    Autores: Getulio Coimbra Regis e Igor Lara de Oliveira
+    Creation Date: 26 / 10 / 2022
+"""
+
+
 import sqlite3
 from server_utils import *
 

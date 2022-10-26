@@ -1,6 +1,6 @@
 /*
 		Descrição: Arquivo para abertura de cliente TCP para comunicação e transferência de dados por protocolo e gRPC (Protobuf)
-	    Autores: Getulio Coimbra Regis e Igor Lara de Oliveira
+	  Autores: Getulio Coimbra Regis e Igor Lara de Oliveira
 		Creation Date: 26 / 10 / 2022
 */
 
